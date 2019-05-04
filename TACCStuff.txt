@@ -1,0 +1,12 @@
+To start an interactive session with a compute node
+
+$idev -m 120 -N 1 -n 16
+
+120 minutes, 1 node, 16 cores
+
+to install 
+pip install sklearn --user
+
+AWS
+=========
+EC2 p3.2xlarge -> Instance Type 
