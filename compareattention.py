@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 import numpy as np
 
-attn_df = pd.read_pickle("./AttnDF/attn_0.pkl")
+attn_df = pd.read_pickle("./AttnDF/IntroOnly1_attn_xbn.pkl")
 
 
 pred_weights = [] 
