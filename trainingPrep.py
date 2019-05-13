@@ -3,7 +3,9 @@ import os
 
 DATAPATH = "/Users/ad45932/Repo/Discourse Summarization/scisummnet/top1000_complete/"
 
-trainFile = "training.txt"
+## IMPORTANT!!!
+## Change filenames accordingly
+trainFile = "training_IntroOnly.txt"
 
 f = open(trainFile, "a+")
 
@@ -14,23 +16,32 @@ for folder in sorted(os.listdir(DATAPATH))[1:]:
 	print("parsing", filepath)
 	paper = etree.parse(filepath)
 	root = paper.getroot()
-	reslist = list(root.iter())
-
-	# print(reslist)
-	## to do: Remove abstaract(??) and title 
-	# result = ' '.join([element.text.strip() for element in reslist if (element.text !=' ' or element.text != '\n' or element.text != None)])
-	# result = [print(element.text) for element in reslist]
 	
-	text = []
-	for element in reslist:
-		if(element.text is not None):
-			text.append(element.text.strip())
+
+	## Code for getting all the texts from a reference paper
+	# reslist = list(root.iter())	
+	# text = []
+	# for element in reslist:
+		# if(element.text is not None):
+		# 	print(element)
+		# 	print(element.tag)
+		# 	text.append(element.text.strip())
+
+
+	## Code for getting the introduction sections
+	for name in root.iter():
+		if(name.attrib.get('title') == "1 Introduction"):
+			text=[]
+			reslist = list(name)
+
+			for element in reslist:
+				text.append(element.text.strip())
 
 
 	# print(text)
 	result = ' '.join(text)
 	result = result + '\n'
-	# print(result)
+	print(result)
 	f.write(result)
 
 f.close()
