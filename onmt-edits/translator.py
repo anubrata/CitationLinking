@@ -376,7 +376,10 @@ class Translator(object):
                     # print("pred", preds)
                     # print("===================================")
                     attn_mtrx = np.matrix(attns)
-                    attn_df = pd.DataFrame(attn_mtrx, columns=srcs, index=preds[:-1])
+                    print("==========attns shape", attn_mtrx.shape)
+                    print("=========SRC length",len(srcs), len(preds[:-1]))
+                    attn_df_columns = (srcs + ["___padded__"]*(attn_mtrx.shape[-1]-len(srcs))) 
+                    attn_df = pd.DataFrame(attn_mtrx, columns=attn_df_columns, index=preds[:-1])
                     # print("=============================ATTN DF=================")
                     # print(attn_df)
                     # print("=====================================================")
@@ -388,10 +391,10 @@ class Translator(object):
                             "{:*>10.7f} ", "{:>10.7f} ", max_index)
                         output += row_format.format(word, *row) + '\n'
                         row_format = "{:>10.10} " + "{:>10.7f} " * len(srcs)
-                    if self.logger:
-                        self.logger.info(output)
-                    else:
-                        os.write(1, output.encode('utf-8'))
+                    # if self.logger:
+                    #    self.logger.info(output)
+                    # else:
+                    #    os.write(1, output.encode('utf-8'))
                    
 
         end_time = time.time()
@@ -838,9 +841,14 @@ class Translator(object):
         if words_total == 0:
             msg = "%s No words predicted" % (name,)
         else:
-            msg = ("%s AVG SCORE: %.4f, %s PPL: %.4f" % (
+            try:
+             msg = ("%s AVG SCORE: %.4f, %s PPL: %.4f" % (
                 name, score_total / words_total,
                 name, math.exp(-score_total / words_total)))
+            except:
+              msg = ("%s AVG SCORE: %.4f, %s PPL: %.4f" % (
+                name, score_total / words_total,
+                name, 0))
         return msg
 
     def _report_bleu(self, tgt_path):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-## This should be in the home folder of OpemMMT-py/
+## this should be in the home folder of OpenNMT-py
 
 from __future__ import unicode_literals
 from itertools import repeat
@@ -12,6 +12,7 @@ from onmt.translate.translator import build_translator
 
 import onmt.opts as opts
 from onmt.utils.parse import ArgumentParser
+import pickle
 
 
 def main(opt):
@@ -24,7 +25,9 @@ def main(opt):
         if opt.tgt is not None else repeat(None)
     shard_pairs = zip(src_shards, tgt_shards)
 
+    count = 0
     for i, (src_shard, tgt_shard) in enumerate(shard_pairs):
+        print("=========",str(i),"=============")
         logger.info("Translating shard %d." % i)
         all_scores, all_preds, attn_df = translator.translate(
             src=src_shard,
@@ -33,12 +36,14 @@ def main(opt):
             batch_size=opt.batch_size,
             attn_debug=opt.attn_debug
             )
-    	
-	## When the attn-debug flag is set to true, you will get attention dataframes for each of
-        ## the source-predict pair
+    
         print("Recieved attn df", type(attn_df))
-        print(attn_df)
-
+        # print(attn_df)
+        filename = "../CitationLinking/AttnDF/IntroOnly3_attn_xbc_val"+ ".pkl"
+        print(filename)
+        attn_df.to_pickle(filename)
+        count=count+1
+        
 
 def _get_parser():
     parser = ArgumentParser(description='translate.py')
